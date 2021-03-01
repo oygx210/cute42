@@ -1,0 +1,17 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Qt42_Images/FieldOfView.png</file>
+        <file>Qt42_Images/loadMission.png</file>
+        <file>Qt42_Images/mission.png</file>
+        <file>Qt42_Images/newMission.png</file>
+        <file>Qt42_Images/orbit.png</file>
+        <file>Qt42_Images/pause.png</file>
+        <file>Qt42_Images/run.png</file>
+        <file>Qt42_Images/saveAsMission.png</file>
+        <file>Qt42_Images/saveMission.png</file>
+        <file>Qt42_Images/SimulationSettings.png</file>
+        <file>Qt42_Images/Spacecraft.png</file>
+        <file>Qt42_Images/stop.png</file>
+        <file>Qt42_Images/test.png</file>
+    </qresource>
+</RCC>
