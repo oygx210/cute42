@@ -902,9 +902,7 @@ void Qt42Model::setDataByType(const QModelIndex& index, const QVariant &data)
         RegionHeader dataRgnh = data.value<RegionHeader>();
         *rgnh = dataRgnh;
     }
-    {
 
-    }
 }
 
 bool Qt42Model::insertColumns(int position, int columns, const QModelIndex &parent)

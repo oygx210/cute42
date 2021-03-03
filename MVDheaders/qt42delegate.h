@@ -7,7 +7,7 @@ class Qt42BaseClass;
 class QAction;
 class QMenu;
 class QDialog;
-
+class QLabel;
 class Qt42Delegate : public QStyledItemDelegate
 {
     Q_OBJECT
@@ -62,7 +62,7 @@ private:
     QModelIndex m_indexSelected;
     QString nameByType(const QModelIndex& index) const;
     void setModelDataByType(QLineEdit* editor, QAbstractItemModel* model,
-                            const QModelIndex& index) const;
+                                const QModelIndex& index) const;
     bool canConvertToCustomType(const QVariant& data) const;
     bool canConvertToCustomTypeSCcomponents(const QVariant& data) const;
     void CM_ClickOnMission(QMouseEvent *event , QAbstractItemModel* model ,

@@ -27,6 +27,9 @@
 #include <QPen>
 #include <QMouseEvent>
 #include <QModelIndex>
+
+#include <QLabel>
+
 Qt42Delegate::Qt42Delegate(QObject *parent): QStyledItemDelegate (parent)
 {
     connect(this, &Qt42Delegate::editSpacecraft, this, &Qt42Delegate::printOutName);
@@ -44,7 +47,7 @@ void Qt42Delegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
         {
            painter->fillRect(option.rect, option.palette.highlight());
         }
-/*
+
         Qt42BaseClass* Qt42BC = static_cast<Qt42BaseClass*>(index.internalPointer());
         if (!Qt42BC->includedInCalculation())
         {
@@ -57,16 +60,10 @@ void Qt42Delegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
             painter->setPen(pen);
 
         }
-*/
+
         if (!canConvertToCustomTypeSCcomponents(index.data()))
         {
-            QRect rectText;
-            rectText.setLeft(option.rect.left());
-            rectText.setTop(option.rect.top());
-            rectText.setBottom(option.rect.bottom());
-            rectText.setRight(option.rect.right());
-            painter->drawText(rectText, Qt::AlignLeft, nameByType(index));
-
+            painter->drawText(option.rect, Qt::AlignLeft, nameByType(index));
         }
         else
         {
@@ -89,7 +86,6 @@ QWidget* Qt42Delegate::createEditor(QWidget *parent,
     lineEditor->setReadOnly(true);
     //lineEditor->setContextMenuPolicy(Qt::CustomContextMenu);
     return lineEditor;
-
 }
 
 void Qt42Delegate::setEditorData(QWidget *editor, const QModelIndex &index) const
@@ -98,12 +94,12 @@ void Qt42Delegate::setEditorData(QWidget *editor, const QModelIndex &index) cons
     QLineEdit* lineEditor = static_cast<QLineEdit*>(editor);
     if (canConvertToCustomType(index.data())){
         lineEditor->setText(nameByType(index));
-
     }
     else {
         lineEditor->setText("Can't convert.");
         qDebug() << "can't setData";
     }
+
 }
 
 void Qt42Delegate::setModelData(QWidget *editor, QAbstractItemModel *model,
@@ -445,8 +441,6 @@ bool Qt42Delegate::editorEvent(QEvent *event, QAbstractItemModel *model,
                                const QStyleOptionViewItem &option,
                                const QModelIndex &index)
 {
-    QPainter* painter = new QPainter;
-    paint(painter, option , index);   // If "paint" is not called explicitly here, the highlight would disappear.
     QMouseEvent* mouseEvent = nullptr;
     if (event->type() == QEvent::MouseButtonPress)
     {
@@ -467,7 +461,6 @@ bool Qt42Delegate::editorEvent(QEvent *event, QAbstractItemModel *model,
                 CM_ClickOnSCcomponents(mouseEvent, model, index);*/
 
             //emit passInfoModelandIndex(model, index);
-            return true;
         }
 
     }
@@ -511,9 +504,8 @@ bool Qt42Delegate::editorEvent(QEvent *event, QAbstractItemModel *model,
         else
             qDebug() << "Double click: Middle";*/
         //emit passInfoModelandIndex(model,index);
-        return true;
     }
-    
+    //QStyledItemDelegate::editorEvent(event, model, option,index);
     return false;
 }
 
@@ -524,15 +516,15 @@ void Qt42Delegate::printOutName(QAbstractItemModel* model, const QModelIndex& in
     qDebug() << Qt42BC->name() << " this is a test";
 }
 
-void Qt42Delegate::setModelDataByType(QLineEdit *lineEditor, QAbstractItemModel *model,
+void Qt42Delegate::setModelDataByType(QLineEdit *editor, QAbstractItemModel *model,
                                       const QModelIndex &index) const
 {
     if (!index.isValid())
         return;
-
     QVariant V_oldData = index.data();
     QVariant V_newData = QVariant();
-    QString newName = lineEditor->text();
+    QString newName = editor->text();
+
     if (V_oldData.canConvert<Mission>())
     {
         Mission oldMission = V_oldData.value<Mission>();
