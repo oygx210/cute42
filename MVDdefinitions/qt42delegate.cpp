@@ -82,31 +82,34 @@ QWidget* Qt42Delegate::createEditor(QWidget *parent,
                                     const QStyleOptionViewItem &option,
                                     const QModelIndex &index) const
 {
+    /*
     QLineEdit* lineEditor = new QLineEdit(parent);
     lineEditor->setReadOnly(true);
     //lineEditor->setContextMenuPolicy(Qt::CustomContextMenu);
     return lineEditor;
+    */
+    QLabel* label = new QLabel(parent);
+    return label;
 }
 
 void Qt42Delegate::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
-
-    QLineEdit* lineEditor = static_cast<QLineEdit*>(editor);
-    if (canConvertToCustomType(index.data())){
-        lineEditor->setText(nameByType(index));
-    }
-    else {
-        lineEditor->setText("Can't convert.");
+    /*
+    QLabel* label = static_cast<QLabel*>(editor);
+    if (canConvertToCustomType(index.data()))
+        label->setText(nameByType(index));
+    else{
+        label->setText("Can't convert.");
         qDebug() << "can't setData";
-    }
-
+    }*/
+    QStyledItemDelegate::setEditorData(editor, index);
 }
 
 void Qt42Delegate::setModelData(QWidget *editor, QAbstractItemModel *model,
                                 const QModelIndex &index) const
 {
-    QLineEdit* lineEditor = static_cast<QLineEdit*>(editor);
-    setModelDataByType(lineEditor, model, index);
+    QLabel* label = static_cast<QLabel*>(editor);
+    setModelDataByType(label, model, index);
 }
 
 void Qt42Delegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option,
@@ -516,7 +519,7 @@ void Qt42Delegate::printOutName(QAbstractItemModel* model, const QModelIndex& in
     qDebug() << Qt42BC->name() << " this is a test";
 }
 
-void Qt42Delegate::setModelDataByType(QLineEdit *editor, QAbstractItemModel *model,
+void Qt42Delegate::setModelDataByType(QLabel *editor, QAbstractItemModel *model,
                                       const QModelIndex &index) const
 {
     if (!index.isValid())
@@ -524,6 +527,47 @@ void Qt42Delegate::setModelDataByType(QLineEdit *editor, QAbstractItemModel *mod
     QVariant V_oldData = index.data();
     QVariant V_newData = QVariant();
     QString newName = editor->text();
+
+    if (V_oldData.canConvert<Mission>())
+    {
+        Mission oldMission = V_oldData.value<Mission>();
+        Mission newMission = oldMission;
+        if (newName.isEmpty())
+            newName = oldMission.name();
+        newMission.rename(newName);
+        V_newData.setValue(newMission);
+        model->setData(index, V_newData, Qt::EditRole);
+    }
+    else if (V_oldData.canConvert<Spacecraft>())
+    {
+        Spacecraft oldSpacecraft = V_oldData.value<Spacecraft>();
+        Spacecraft newSpacecraft = oldSpacecraft;
+        if (newName.isEmpty())
+            newName = oldSpacecraft.name();
+        newSpacecraft.rename(newName);
+        V_newData.setValue(newSpacecraft);
+        model->setData(index, V_newData, Qt::EditRole);
+    }
+
+    else if (V_oldData.canConvert<Orbit>())
+    {
+        Orbit oldOrbit = V_oldData.value<Orbit>();
+        Orbit newOrbit = oldOrbit;
+        if (newName.isEmpty())
+            newName = oldOrbit.name();
+        newOrbit.rename(newName);
+        V_newData.setValue(newOrbit);
+        model->setData(index, V_newData, Qt::EditRole);
+    }
+}
+
+void Qt42Delegate::renameFromDialog(const QString &s, QAbstractItemModel *model, const QModelIndex &index) const
+{
+    if (!index.isValid())
+        return;
+    QVariant V_oldData = index.data();
+    QVariant V_newData = QVariant();
+    QString newName = s;
 
     if (V_oldData.canConvert<Mission>())
     {
@@ -576,7 +620,7 @@ void Qt42Delegate::ShowDialogModifiyName(QAbstractItemModel *model,
         btnBox->addButton(btnCancel, QDialogButtonBox::RejectRole);
         connect(btnBox, &QDialogButtonBox::accepted, DialogModifyName, &QDialog::accept);
         connect(btnBox, &QDialogButtonBox::rejected, DialogModifyName, &QDialog::reject);
-        connect(btnOK, &QPushButton::clicked, this, [=](){this->setModelData(nameLineEdit, model,index);});
+        connect(btnOK, &QPushButton::clicked, this, [=](){this->renameFromDialog(nameLineEdit->text().trimmed(), model, index);});
         QVBoxLayout* layoutV = new QVBoxLayout;
         layoutV->setContentsMargins(30,20,30,20);
         layoutV->addWidget(nameLineEdit);

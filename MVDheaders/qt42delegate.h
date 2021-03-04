@@ -61,8 +61,9 @@ private slots:
 private:
     QModelIndex m_indexSelected;
     QString nameByType(const QModelIndex& index) const;
-    void setModelDataByType(QLineEdit* editor, QAbstractItemModel* model,
+    void setModelDataByType(QLabel* editor, QAbstractItemModel* model,
                                 const QModelIndex& index) const;
+    void renameFromDialog(const QString& newName, QAbstractItemModel* model, const QModelIndex& index) const;
     bool canConvertToCustomType(const QVariant& data) const;
     bool canConvertToCustomTypeSCcomponents(const QVariant& data) const;
     void CM_ClickOnMission(QMouseEvent *event , QAbstractItemModel* model ,
