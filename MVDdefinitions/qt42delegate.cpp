@@ -100,8 +100,7 @@ void Qt42Delegate::setEditorData(QWidget *editor, const QModelIndex &index) cons
         label->setText(nameByType(index));
     else{
         label->setText("Can't convert.");
-        qDebug() << "can't setData";
-    }*/
+        qDebug() << "can't setData";} */
     QStyledItemDelegate::setEditorData(editor, index);
 }
 
