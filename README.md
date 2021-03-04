@@ -6,4 +6,4 @@ The goal is to program "Cute42" as a powerful astrodynamics simulation package e
 Thanks to Dr. Eric Stoneking sharing his source code and sharing it with the public, I can make something different.
 
 The Demo: (The GUI part is coded by me and the window with a satallite rendered is from "42")
-![image]()
+![image](https://github.com/ytso/cute42/blob/main/Cute42_07.png)
